@@ -1,5 +1,7 @@
 FROM buildpack-deps:focal
 
+# This recipe is modified from https://github.com/nest/nest-docker/blob/master/src/latest/Dockerfile
+
 ENV TERM=xterm \
     TZ=Europe/Berlin \
     DEBIAN_FRONTEND=noninteractive
