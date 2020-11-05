@@ -98,5 +98,12 @@ RUN pip install git+https://github.com/INM-6/hybridLFPy.git@nest3#egg=hybridLFPy
 RUN pip3 install git+https://github.com/NeuralEnsemble/parameters@b95bac2bd17f03ce600541e435e270a1e1c5a478
 
 
-# run this every time the container i started...
-ENTRYPOINT [". /opt/nest/bin/nest_vars.sh"]
+# Add NEST binary folder to PATH
+ENV PATH /opt/nest/bin:${PATH}
+
+# Add pyNEST to PYTHONPATH
+ENV PYTHONPATH /opt/nest/lib/python3.8/site-packages:${PYTHONPATH}
+
+# If runnign with Singularity, run the following line in the host. PYTHONPATH set here doesn't carry over
+# export SINGULARITYENV_PYTHONPATH=/opt/nest/lib/python3.8/site-packages
+# Alternatively, run "source /opt/local/bin/nest_vars.sh" in the running image
