@@ -44,13 +44,13 @@ RUN rm -r nest-simulator
 
 
 # ---- additional requirements
-RUN apt-get install \
+RUN apt-get install -y \
     python3-numpy \
     python3-scipy \
     python3-matplotlib \
     python3-pandas \
     ipython3 \
-    jupyter \
+    jupyter
 
 # installing serial h5py (deb package installs OpenMPI which may conflict with MPICH)
 RUN pip install h5py
