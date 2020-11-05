@@ -1,9 +1,5 @@
 FROM buildpack-deps:focal
 
-#ENV TERM=xterm \
-#    TZ=Europe/Berlin \
-#    DEBIAN_FRONTEND=noninteractive
-
 RUN apt-get update && \
     apt-get install -y \
     cmake \
@@ -26,7 +22,7 @@ RUN pip install mpi4py
 RUN git clone https://github.com/nest/nest-simulator.git && \
     cd nest-simulator && \
     # git checkout master && \
-    git checkout 24de43dc21c568e017839eeb335253c2bc2d487d && \
+    # git checkout 24de43dc21c568e017839eeb335253c2bc2d487d && \
     cd .. && \
     mkdir nest-build && \
     ls -l && \
@@ -44,6 +40,7 @@ RUN git clone https://github.com/nest/nest-simulator.git && \
     cd /
 
 RUN rm -r nest-simulator
+RUN rm -r nest-build
 
 
 # ---- additional requirements
