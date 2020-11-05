@@ -16,7 +16,10 @@ RUN apt-get update && \
     python3-dev \
     python3-pip
 
-RUN pip3 install mpi4py
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && \
+    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
+
+RUN pip install mpi4py
 
 
 # ----- Install NEST -----
@@ -51,6 +54,8 @@ RUN apt-get install -y \
     python3-pandas \
     ipython3 \
     jupyter
+
+RUN update-alternatives --install /usr/bin/ipython ipython /usr/bin/ipython3 10
 
 # installing serial h5py (deb package installs OpenMPI which may conflict with MPICH)
 RUN pip install h5py
