@@ -1,11 +1,11 @@
 # LFPy showcase
 
-This Lab contains various demonstrations on how LFPy (https://github.com/LFPy/LFPy, https://LFPy.rtfd.io) can be utilized on HPC infrastructure via Unicore.
+This Lab contains various demonstrations on how LFPy (https://github.com/LFPy/LFPy, https://LFPy.rtfd.io) can be utilized on HPC infrastructure via Unicore: https://wiki.ebrains.eu/bin/view/Collabs/hybridlfpy-showcase
 
 
 # Docker
 
-``[![Docker](https://img.shields.io/badge/Docker-yes-green.svg)](https://hub.docker.com/r/lfpy/hybridlfpy)``
+[![Docker](https://img.shields.io/badge/Docker-yes-green.svg)](https://hub.docker.com/r/lfpy/hybridlfpy)
 
 ## hybridLFPy Docker recipe
 
