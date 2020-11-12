@@ -80,7 +80,7 @@ ENV PATH /opt/nest/bin:${PATH}
 # Add pyNEST to PYTHONPATH
 ENV PYTHONPATH /opt/nest/lib/python3.8/site-packages:${PYTHONPATH}
 
-# If runnign with Singularity, run the below line in the host.
+# If running with Singularity, run the below line in the host.
 # PYTHONPATH set here doesn't carry over:
 # export SINGULARITYENV_PYTHONPATH=/opt/nest/lib/python3.8/site-packages
 # Alternatively, run "source /opt/local/bin/nest_vars.sh" while running the container
