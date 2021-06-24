@@ -17,8 +17,10 @@ RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && 
 
 RUN pip install mpi4py
 
-
 # Install NEST 3 (master branch @v3.0)
+ARG WITH_MPI=ON
+ARG WITH_OMP=ON
+ARG WITH_GSL=ON
 RUN wget https://github.com/nest/nest-simulator/archive/v3.0.tar.gz && \
   mkdir nest-build && \
   tar zxf v3.0.tar.gz && \
