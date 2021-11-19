@@ -1,4 +1,4 @@
-FROM buildpack-deps:focal
+FROM buildpack-deps:hirsute
 
 RUN apt-get update && \
     apt-get install -y \
@@ -10,7 +10,8 @@ RUN apt-get update && \
     libgsl-dev \
     cython3 \
     python3-dev \
-    python3-pip
+    python3-pip \
+    python3-numpy
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && \
     update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
@@ -84,15 +85,10 @@ RUN pip install git+https://github.com/INM-6/hybridLFPy.git@master#egg=hybridLFP
 RUN pip3 install git+https://github.com/NeuralEnsemble/parameters@b95bac2bd17f03ce600541e435e270a1e1c5a478
 
 
-# Add NEST binary folder to PATH
-# ENV PATH /opt/nest/bin:${PATH}
-
-# Add pyNEST to PYTHONPATH
-# ENV PYTHONPATH /opt/nest/lib/python3.8/site-packages:${PYTHONPATH}
-
+# Add NEST environment variables
 RUN echo "source /opt/nest/bin/nest_vars.sh" >> root/.bashrc
 
 # If running with Singularity, run the below line in the host.
 # PYTHONPATH set here doesn't carry over:
-# export SINGULARITYENV_PYTHONPATH=/opt/nest/lib/python3.8/site-packages
+# export SINGULARITYENV_PYTHONPATH=/opt/nest/lib/python3.9/site-packages
 # Alternatively, run "source /opt/local/bin/nest_vars.sh" while running the container
