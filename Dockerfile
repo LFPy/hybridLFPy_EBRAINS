@@ -1,4 +1,4 @@
-FROM buildpack-deps:focal
+FROM buildpack-deps:hirsute
 
 RUN apt-get update && \
     apt-get install -y \
@@ -10,24 +10,20 @@ RUN apt-get update && \
     libgsl-dev \
     cython3 \
     python3-dev \
-    python3-pip
+    python3-pip \
+    python3-numpy
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && \
     update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
 
 RUN pip install mpi4py
 
-
-# ----- Install NEST -----
-RUN git clone https://github.com/nest/nest-simulator.git && \
-    cd nest-simulator && \
-    # git checkout master && \
-    # git checkout 24de43dc21c568e017839eeb335253c2bc2d487d && \
-    cd .. && \
-    mkdir nest-build && \
-    ls -l && \
-    cd  nest-build && \
-    cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/nest/ \
+# Install NEST 3.1 (master branch @v3.1)
+RUN git clone --depth 1 -b v3.1 https://github.com/nest/nest-simulator && \
+  mkdir nest-build && \
+  cd  nest-build && \
+  cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/nest/ \
+        -Dwith-boost=ON \
         -Dwith-ltdl=ON \
         -Dwith-gsl=ON \
         -Dwith-readline=ON \
@@ -35,10 +31,11 @@ RUN git clone https://github.com/nest/nest-simulator.git && \
         -Dwith-mpi=ON \
         -Dwith-openmp=ON \
         ../nest-simulator && \
-    make && \
-    make install && \
-    cd /
+  make -j4 && \
+  make install && \
+  cd ..
 
+# clean up install/build files
 RUN rm -r nest-simulator
 RUN rm -r nest-build
 
@@ -59,28 +56,39 @@ RUN pip install h5py
 
 
 # ---- install neuron -----
-RUN pip install neuron
+RUN apt-get install -y \
+    bison flex
 
+RUN git clone --depth 1 -b 8.0.0 https://github.com/neuronsimulator/nrn.git
+RUN mkdir nrn-bld && cd nrn-bld
 
-# ---- install LFPy@2.2.dev0 -----
-RUN pip install git+https://github.com/LFPy/LFPy.git@2.2.dev0#egg=LFPy
+RUN cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/nrn/ \
+  -DCURSES_NEED_NCURSES=ON \
+  -DNRN_ENABLE_INTERVIEWS=OFF \
+  -DNRN_ENABLE_MPI=ON \
+  -DNRN_ENABLE_RX3D=OFF \
+  -DNRN_ENABLE_PYTHON=ON \
+  ../nrn
+
+RUN cmake --build . --parallel 4 --target install && \
+  cd ..
+
+# add nrnpython to PYTHONPATH
+ENV PYTHONPATH /opt/nrn/lib/python:${PYTHONPATH}
 
 
 # --- Install hybridLFPy ----
-RUN pip install git+https://github.com/INM-6/hybridLFPy.git@nest3#egg=hybridLFPy
+RUN pip install git+https://github.com/INM-6/hybridLFPy.git@master#egg=hybridLFPy
 
 
 # ---- Install additional dependencies for examples ----
 RUN pip3 install git+https://github.com/NeuralEnsemble/parameters@b95bac2bd17f03ce600541e435e270a1e1c5a478
 
 
-# Add NEST binary folder to PATH
-ENV PATH /opt/nest/bin:${PATH}
-
-# Add pyNEST to PYTHONPATH
-ENV PYTHONPATH /opt/nest/lib/python3.8/site-packages:${PYTHONPATH}
+# Add NEST environment variables
+RUN echo "source /opt/nest/bin/nest_vars.sh" >> root/.bashrc
 
 # If running with Singularity, run the below line in the host.
 # PYTHONPATH set here doesn't carry over:
-# export SINGULARITYENV_PYTHONPATH=/opt/nest/lib/python3.8/site-packages
+# export SINGULARITYENV_PYTHONPATH=/opt/nest/lib/python3.9/site-packages
 # Alternatively, run "source /opt/local/bin/nest_vars.sh" while running the container
